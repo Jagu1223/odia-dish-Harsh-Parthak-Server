@@ -19,7 +19,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5173", // for local dev
-  "https://odia-dish-harsh-parthak-client-dkhp.vercel.app", // your deployed frontend
+  "https://odia-dish-harsh-parthak-client-mpi9.vercel.app/", // your deployed frontend
 ];
 
 app.use(
