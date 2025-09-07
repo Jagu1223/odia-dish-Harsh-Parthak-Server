@@ -9,9 +9,22 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 app.use(express.json());
 
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", //for local dev
+
+//     credentials: true,
+//   })
+// );
+
+const allowedOrigins = [
+  "http://localhost:5173", // for local dev
+  "https://odia-dish-harsh-parthak-client-dkhp.vercel.app", // your deployed frontend
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   })
 );
