@@ -19,7 +19,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5173", // for local dev
-  "https://odia-dish-harsh-parthak-client-mpi9.vercel.app/", // your deployed frontend
+  "https://odia-dish-harsh-parthak-client-mpi9.vercel.app", // your deployed frontend
 ];
 
 app.use(
@@ -29,31 +29,69 @@ app.use(
   })
 );
 
-// checkout api
+// checkout api       //localhost
+// app.post("/api/create-checkout-session", async (req, res) => {
+//   const { products } = req.body;
+//   console.log(products);
+//   const lineItems = products.map((product) => ({
+//     price_data: {
+//       currency: "inr",
+//       product_data: {
+//         name: product.dish,
+//         images: [product.imgdata],
+//       },
+//       unit_amount: product.price * 100,
+//     },
+//     quantity: product.qnty,
+//   }));
+
+//   const session = await stripe.checkout.sessions.create({
+//     payment_method_types: ["card"],
+//     line_items: lineItems,
+//     mode: "payment",
+//     // success_url: "http://localhost:5173/success", //localhost
+//     // cancel_url: "http://localhost:5173/cancel",  //localhost
+
+//     success_url:
+//       "https://odia-dish-harsh-parthak-client-mpi9.vercel.app/success",
+//     cancel_url: "https://odia-dish-harsh-parthak-client-mpi9.vercel.app/cancel",
+//   });
+
+//   // res.json({ id: session.id }); localhost
+
+//   res.json({ url: session.url });
+// });
+
 app.post("/api/create-checkout-session", async (req, res) => {
-  const { products } = req.body;
-  console.log(products);
-  const lineItems = products.map((product) => ({
-    price_data: {
-      currency: "inr",
-      product_data: {
-        name: product.dish,
-        images: [product.imgdata],
+  try {
+    const { products } = req.body;
+    const lineItems = products.map((product) => ({
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: product.dish,
+          images: [product.imgdata],
+        },
+        unit_amount: product.price * 100,
       },
-      unit_amount: product.price * 100,
-    },
-    quantity: product.qnty,
-  }));
+      quantity: product.qnty,
+    }));
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: lineItems,
-    mode: "payment",
-    success_url: "http://localhost:5173/success",
-    cancel_url: "http://localhost:5173/cancel",
-  });
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url:
+        "https://odia-dish-harsh-parthak-client-mpi9.vercel.app/success",
+      cancel_url:
+        "https://odia-dish-harsh-parthak-client-mpi9.vercel.app/cancel",
+    });
 
-  res.json({ id: session.id });
+    res.json({ url: session.url }); // send session URL back
+  } catch (error) {
+    console.error("Stripe error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // const PORT = process.env.PORT || 5000;
