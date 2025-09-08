@@ -17,14 +17,31 @@ app.use(express.json());
 //   })
 // );
 
-const allowedOrigins = [
-  "http://localhost:5173", // for local dev
-  "https://odia-dish-harsh-parthak-client-mpi9.vercel.app", // your deployed frontend
-];
+// const allowedOrigins = [
+//   "http://localhost:5173", // for local dev
+//   "https://odia-dish-harsh-parthak-client-mpi9.vercel.app", // your deployed frontend
+// ];
+
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     credentials: true,
+//   })
+// );
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (
+        !origin ||
+        origin.includes("localhost:5173") ||
+        origin.endsWith(".vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
